@@ -1,0 +1,5 @@
+msgpack-0.5.9   : newver versions doesnt work (pip install msgpack-python)
+libzmq: 4.05 (using debian patches, jessy repo)
+python-zmq : 14.6  (pip install pyzmq==14.6.0)
+
+protobuf: 2.6.1

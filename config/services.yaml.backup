@@ -1,0 +1,240 @@
+#  ___________________________________________________
+# |  _____                       _____ _ _       _    |
+# | |  __ \                     |  __ (_) |     | |   |
+# | | |__) |__ _ __   __ _ _   _| |__) || | ___ | |_  |
+# | |  ___/ _ \ '_ \ / _` | | | |  ___/ | |/ _ \| __| |
+# | | |  |  __/ | | | (_| | |_| | |   | | | (_) | |_  |
+# | |_|   \___|_| |_|\__, |\__,_|_|   |_|_|\___/ \__| |
+# |                   __/ |                           |
+# |  GNU/Linux based |___/  Multi-Rotor UAV Autopilot |
+# |___________________________________________________|
+#
+# Services Configuration File
+#
+# Copyright (C) 2014 Tobias Simon, Integrated Communication Systems Group, TU Ilmenau
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+
+test_service:
+   binary: 'test_service/service/test_service'
+
+motors:
+   binary: 'motors/service/motors'
+
+penguio_mw:
+   binary: 'penguio_mw/service/penguio_mw'
+   platforms: [u3_penguio_mw]
+
+i2c_sensors:
+   binary: 'i2c_sensors/service/i2c_sensors'
+   platforms: [u3_bitbang_arduino]
+
+gyro_cal:
+   binary: 'gyro_cal/service/gyro_cal'
+   depends: [penguio_mw, i2c_sensors]
+
+gps_rel:
+   binary: 'gps_rel/service/gps_rel'
+   depends: [gpsp]
+
+
+mag_adc_cal:
+   binary: 'mag_adc_cal/service/mag_adc_cal'
+   depends: [penguio_mw, i2c_sensors]
+
+cmc:
+   binary: 'cmc/service/cmc'
+   depends: [arduino, twl4030_madc, ads1x15, mag_adc_cal]
+
+acc_cal:
+   binary: 'acc_cal/service/acc_cal'
+   depends: [penguio_mw, i2c_sensors]
+
+ahrs:
+   binary: 'ahrs/service/ahrs'
+   depends: [gyro_cal, acc_cal, cmc, geomag]
+
+acc_rot_neu:
+   binary: 'acc_rot_neu/service/acc_rot_neu'
+   depends: [ahrs, acc_cal]
+
+acc_hpf_neu:
+   binary: 'acc_hpf_neu/service/acc_hpf_neu'
+   depends: [acc_rot_neu]
+
+pos_speed_est_neu:
+   binary: 'pos_speed_est_neu/service/pos_speed_est_neu'
+   depends: [acc_hpf_neu, gps_rel]
+
+rs_ctrl:
+   binary: 'rs_ctrl/service/rs_ctrl'
+   depends: [mixer_prx]
+
+rs_ctrl_prx:
+   binary: 'rs_ctrl_prx/service/rs_ctrl_prx'
+   depends: [rs_ctrl]
+
+rp_ctrl:
+   binary: 'rp_ctrl/service/rp_ctrl.py'
+   depends: [ahrs, rs_ctrl_prx]
+
+rp_ctrl_prx:
+   binary: 'rp_ctrl_prx/service/rp_ctrl_prx'
+   depends: [rp_ctrl]
+
+hs_ctrl:
+   binary: 'hs_ctrl/service/hs_ctrl.py'
+   depends: [rp_ctrl_prx, pos_speed_est_neu]
+
+hs_ctrl_prx:
+   binary: 'hs_ctrl_prx/service/hs_ctrl_prx.py'
+   depends: [hs_ctrl]
+
+hp_ctrl:
+   binary: 'hp_ctrl/service/hp_ctrl.py'
+   depends: [hs_ctrl_prx]
+
+hp_ctrl_prx:
+   binary: 'hp_ctrl_prx/service/hp_ctrl_prx.py'
+   depends: [hp_ctrl]
+
+vs_ctrl:
+   binary: 'vs_ctrl/service/vs_ctrl.py'
+   depends: [mixer_prx, pos_speed_est_neu]
+
+vs_ctrl_prx:
+   binary: 'vs_ctrl_prx/service/vs_ctrl_prx.py'
+   depends: [vs_ctrl]
+
+vp_ctrl:
+   binary: 'vp_ctrl/service/vp_ctrl.py'
+   depends: [vs_ctrl_prx, elevmap]
+
+vp_ctrl_prx:
+   binary: 'vp_ctrl_prx/service/vp_ctrl_prx.py'
+   depends: [vp_ctrl]
+
+rc_gestures:
+   binary: 'rc_gestures/service/rc_gestures.py'
+   depends: [rc_cal]
+
+
+flight_detect:
+   binary: 'flight_detect/service/flight_detect.py'
+   depends: [acc_rot_neu, motors]
+
+
+autopilot:
+   binary: 'autopilot/service/autopilot.py'
+   depends: [vp_ctrl_prx, hp_ctrl_prx]
+
+autopilot_prx:
+   binary: 'autopilot_prx/service/autopilot_prx.py'
+   depends: [autopilot]
+
+arduino:
+   binary: 'arduino/service/arduino'
+   platforms: [u3_bitbang_arduino]
+
+rc_cal:
+   binary: 'rc_cal/service/rc_cal'
+   depends: [remote, arduino]
+
+remote:
+   binary: 'remote/service/remote'
+   platforms: [overo, pi]
+
+
+mixer:
+   binary: 'mixer/service/mixer'
+   depends: [motors]
+
+mixer_prx:
+   binary: 'mixer_prx/service/mixer_prx'
+   depends: [mixer]
+
+ofs:
+   binary: 'ofs/service/ofs'
+
+ads1x15:
+   binary: 'ads1x15/service/ads1x15.py'
+   platforms: [pi]
+
+gpsp:
+   binary: 'gpsp/service/gpsp'
+
+twl4030_madc:
+   binary: 'twl4030_madc/service/twl4030_madc.py'
+   platforms: [overo]
+
+
+opcd:
+  binary: 'opcd/service/opcd.py'
+
+mavlink:
+  binary: 'mavlink/service/mavlink.py'
+
+battmon:
+  binary: 'battmon/service/battmon.py'
+  depends: [arduino, twl4030_madc, ads1x15]
+
+display:
+  binary: 'display/service/display.py'
+  platforms: [overo]
+  depends: [battmon, geomag, elevmap, rc_cal]
+
+emerg_kill:
+  binary: 'emerg_kill/service/emerg_kill.py'
+
+blackbox:
+  binary: 'blackbox/service/blackbox.py'
+
+aircomm:
+  binary: 'aircomm/service/aircomm.py'
+
+heartbeat:
+  binary: 'heartbeat/service/heartbeat.py'
+  depends: [gpsp, battmon, aircomm]
+
+geomag:
+  binary: 'geomag/service/geomag.py'
+  depends: [gpsp]
+
+elevmap:
+  binary: 'elevmap/service/elevmap.py'
+  depends: [gpsp]
+
+teensy_taranis:
+  binary: 'teensy_taranis/service/teensy_taranis.py'
+
+gpstime:
+  binary: 'gpstime/service/gpstime'
+  depends: [gpsp]
+
+wifi_sensor:
+  binary: 'wifi_sensor/service/wifi_sensor.py'
+
+wifi_loc:
+  binary: 'wifi_loc/service/wifi_loc.py'
+  depends: [gpsp, wifi_sensor]
+
+log_proxy:
+  binary: 'logger/service/log_proxy.py'
+
+file_logger:
+  binary: 'logger/service/file_logger.py'
+  depends: [log_proxy]
+
+gps_logger:
+  binary: 'logger/service/gps_logger.py'
+  depends: [gpstime]
+
