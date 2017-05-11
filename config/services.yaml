@@ -77,7 +77,7 @@ pos_speed_est_neu:
 
 rs_ctrl:
    binary: 'rs_ctrl/service/rs_ctrl'
-   depends: [mixer_prx]
+   depends: []
 
 rs_ctrl_prx:
    binary: 'rs_ctrl_prx/service/rs_ctrl_prx'
@@ -156,11 +156,11 @@ remote:
 
 mixer:
    binary: 'mixer/service/mixer'
-   depends: [motors]
+   depends: []
 
 mixer_prx:
    binary: 'mixer_prx/service/mixer_prx'
-   depends: [mixer]
+   depends: []
 
 ofs:
    binary: 'ofs/service/ofs'

@@ -80,8 +80,8 @@ static enum
    MOTORS_NORMAL,
    MOTORS_TEST
 } 
-mot_en_mode = MOTORS_OFF;
-static int mot_en_state[MAX_MOTORS];
+mot_en_mode = MOTORS_OFF; // 0 value
+static int mot_en_state[MAX_MOTORS]; //MAX_MOTORS defined in motors.h
 
 
 /* mot_en reader thread: */

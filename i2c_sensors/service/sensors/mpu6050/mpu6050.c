@@ -221,6 +221,9 @@ int mpu6050_read(mpu6050_t *mpu, vec3_t *gyro, vec3_t *acc, float *temperature)
 
    THROW_BEGIN();
 
+   //first 3 words -> accelerometer data (x,y,z accelerations)
+   //4th word -> temperature gyro
+   //last 3 words -> gyroscope angular velocities
    int16_t val[7];
    THROW_ON_ERR(read_raw(mpu, val));
 

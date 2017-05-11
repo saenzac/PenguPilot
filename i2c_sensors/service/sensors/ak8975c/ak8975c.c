@@ -83,6 +83,8 @@ static int read_raw(ak8975c_t *dev)
    /* read out values */
    THROW_ON_ERR(i2c_read_block_reg(&dev->i2c_dev, AK8975C_HXL, data, sizeof(data)));
 
+   // raw is type vec3_t  (vec3_t raw;)
+   // raw.x is real_t, real value
    dev->raw.x = (int16_t)((data[1] << 8) | data[0]);
    dev->raw.y = (int16_t)((data[3] << 8) | data[2]);
    dev->raw.z = (int16_t)((data[5] << 8) | data[4]);

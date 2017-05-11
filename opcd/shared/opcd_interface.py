@@ -90,7 +90,7 @@ class OPCD_Interface:
          id = self.prefix + '.' + id
       req.id = id
       rep = self._send_and_recv(req)
-      if rep.status != 0:
+      if rep.status != 0 and id != "":
          raise KeyError(id)
       pairs = []
       for pair in rep.pairs:
