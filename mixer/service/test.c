@@ -14,7 +14,13 @@
 
 int main()
 {
+
    float mixer[FORCES_AND_MOMENTS][MAX_MOTORS];
+   char *matrix_def;
+   tsfloat_t imtx1;
+   tsfloat_t imtx2;
+   tsfloat_t imtx3;
+   tsfloat_t f_c;
 
    opcd_param_t params[] =
    {
