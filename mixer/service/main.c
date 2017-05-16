@@ -31,7 +31,7 @@ MSGPACK_READER_BEGIN(thrust_max_reader)
 MSGPACK_READER_END
 
 
-/*
+
 SERVICE_MAIN_BEGIN("mixer", PP_PRIO_1)
 {
    tsfloat_init(&thrust, 0.0f); // 0N force; safe to start with
@@ -99,5 +99,3 @@ SERVICE_MAIN_BEGIN("mixer", PP_PRIO_1)
    MSGPACK_READER_SIMPLE_LOOP_END
 }
 SERVICE_MAIN_END
-
-*/
