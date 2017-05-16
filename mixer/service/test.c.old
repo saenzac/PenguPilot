@@ -12,7 +12,7 @@
 #include "inv_coupling.h"
 #include "coupling_matrix_parser.h"
 
-int main()
+SERVICE_MAIN_BEGIN("mixer", PP_PRIO_1)
 {
 
    float mixer[FORCES_AND_MOMENTS][MAX_MOTORS];
@@ -44,3 +44,4 @@ int main()
    inv_coupling_init(n_motors, mixer);
 
 }
+SERVICE_MAIN_END

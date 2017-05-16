@@ -16,6 +16,11 @@ void coupling_matrix_print(int n_motors, float mixer[FORCES_AND_MOMENTS][MAX_MOT
    {
       LOG(LL_DEBUG, "%.1f\t%.1f\t%.1f\t%.1f", mixer[0][i], mixer[1][i], mixer[2][i], mixer[3][i]);
    }
+  /*LOG(LL_DEBUG, "mixer[0:3][0]:%.1f\t%.1f\t%.1f\t%.1f ---- mixer[0:3][1]:%.1f\t%.1f\t%.1f\t%.1f --- mixer[0:3][2]:%.1f\t%.1f\t%.1f\t%.1f ---mixer[0:3][3]:%.1f\t%.1f\t%.1f\t%.1f", 
+    mixer[0][0], mixer[1][0], mixer[2][0], mixer[3][0], 
+    mixer[0][1], mixer[1][1], mixer[2][1], mixer[3][1],
+    mixer[0][2], mixer[1][2], mixer[2][2], mixer[3][2],
+    mixer[0][3], mixer[1][3], mixer[2][3], mixer[3][3]);*/
 }
 
 
