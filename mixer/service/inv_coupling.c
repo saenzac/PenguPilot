@@ -67,6 +67,12 @@ void inv_coupling_init(size_t n_motors, float mixer[FORCES_AND_MOMENTS][MAX_MOTO
       }
    }
 
+   LOG(LL_DEBUG, "%.1f\t%.1f\t%.1f\t%.1f ---- %.1f\t%.1f\t%.1f\t%.1f --- %.1f\t%.1f\t%.1f\t%.1f ---%.1f\t%.1f\t%.1f\t%.1f", 
+    inv_coupling.matrix.ve[0], inv_coupling.matrix.ve[1], inv_coupling.matrix.ve[2], inv_coupling.matrix.ve[3], 
+    inv_coupling.matrix.ve[4], inv_coupling.matrix.ve[5], inv_coupling.matrix.ve[6], inv_coupling.matrix.ve[7], 
+    inv_coupling.matrix.ve[8], inv_coupling.matrix.ve[9], inv_coupling.matrix.ve[10], inv_coupling.matrix.ve[11], 
+    inv_coupling.matrix.ve[12], inv_coupling.matrix.ve[13], inv_coupling.matrix.ve[14], inv_coupling.matrix.ve[15] );
+
    /* allocate input vector: */
    vec4_init(&inv_coupling.in);
    
