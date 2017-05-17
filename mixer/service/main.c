@@ -66,7 +66,7 @@ SERVICE_MAIN_BEGIN("mixer", PP_PRIO_1)
    inv_coupling_init(n_motors, mixer);
    
    MSGPACK_READER_START(thrust_reader, "thrust", PP_PRIO_1, "sub");
-   MSGPACK_READER_START(thrust_max_reader, "thrust_max", PP_PRIO_3, "sub");
+   MSGPACK_READER_START(thrust_max_reader, "thrust_max", PP_PRIO_1, "sub");
    void *torques_socket = scl_get_socket("torques", "sub");
    THROW_IF(torques_socket == NULL, -EIO);
    void *forces_socket = scl_get_socket("forces", "pub");

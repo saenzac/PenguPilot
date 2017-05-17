@@ -79,8 +79,7 @@ env = Environment(
     SHLIBPREFIX="",
     ENV = {'PATH' : os.environ['PATH'],
            'TERM' : os.environ['TERM'],
-           'HOME' : os.environ['HOME'],
-           'PKG_CONFIG_PATH' : os.environ['PKG_CONFIG_PATH']},
+           'HOME' : os.environ['HOME']},
     tools=['default', 'protoc', 'protoc-c'])
 
 

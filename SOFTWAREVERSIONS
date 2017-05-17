@@ -1,5 +1,17 @@
+apt-get install swig (neccesary for compile display/...)
+
+#neccesary if not comply with protoc-c not found:
+apt-get install protobuf-c-compiler
+apt-get install libprotobuf-c-dev
+sudo pip install protobuf
+
+#geomath
+pip install geomath
+pip install pyproj
+
 msgpack-0.5.9   : newver versions doesnt work (pip install msgpack-python)
 libzmq: 4.05 (using debian patches, jessy repo)
 python-zmq : 14.6  (pip install pyzmq==14.6.0)
 
-protobuf: 2.6.1
+protobuf: 2.6.1  (instead of apt-get install libprotobuf10)
+apt-get install protobuf-compiler

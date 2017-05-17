@@ -127,18 +127,21 @@ SERVICE_MAIN_BEGIN("motors", PP_PRIO_1)
 {
    /* start voltage reader thread: */
    tsfloat_init(&voltage, 16.0);
-   MSGPACK_READER_START(mot_en_reader, "mot_en", PP_PRIO_2, "pull");
-   MSGPACK_READER_START(voltage_reader, "voltage", PP_PRIO_2, "sub");
+   MSGPACK_READER_START(mot_en_reader, "mot_en", PP_PRIO_1, "pull");
+   MSGPACK_READER_START(voltage_reader, "voltage", PP_PRIO_1, "sub");
  
    /* initialize SCL: */
    void *forces_socket = scl_get_socket("forces", "sub");
    THROW_IF(forces_socket == NULL, -EIO);
    void *int_en_socket = scl_get_socket("int_en", "pub");
    THROW_IF(int_en_socket == NULL, -EIO);
+   void *pwms_socket = scl_get_socket("pwms", "pub");
+   THROW_IF(pwms_socket == NULL, -EIO);
 
    /* init opcd: */
    char *platform;
    opcd_param_get("platform", &platform);
+   platform[strlen(platform) - 1] = 0; //johnny fix
    LOG(LL_INFO, "platform: %s", platform);
    
    /* determine motor f2e: */
@@ -157,6 +160,7 @@ SERVICE_MAIN_BEGIN("motors", PP_PRIO_1)
       f2e = f2e_hexfet20_suppo221213_1045;   
    else
       THROW(-EINVAL);
+
    
    /* determine motors order: */
    int order[MAX_MOTORS];
@@ -172,10 +176,10 @@ SERVICE_MAIN_BEGIN("motors", PP_PRIO_1)
    char *driver;
    opcd_param_get(buffer_path, &driver);
    LOG(LL_INFO, "driver: %s", driver);
-   int (*write_motors)(float *);
+   int (*write_motors)(float *,float*);
    if (strcmp(driver, "arduino") == 0)
    {
-      arduino_pwms_init();
+      //arduino_pwms_init(); //johnny mod
       write_motors = arduino_pwms_write;   
    }
    THROW_ON_ERR(mot_sm_init());
@@ -236,7 +240,16 @@ SERVICE_MAIN_BEGIN("motors", PP_PRIO_1)
             scl_copy_send_dynamic(int_en_socket, msgpack_buf->data, msgpack_buf->size);
          }
 
-         write_motors(ctrls);
+         float pwms[MAX_MOTORS];
+         write_motors(ctrls,pwms);
+         
+         msgpack_sbuffer_clear(msgpack_buf);
+         msgpack_pack_array(pk,4);
+         FOR_N(i,4)
+           PACKF(pwms[i]);
+
+         scl_copy_send_dynamic(pwms_socket, msgpack_buf->data, msgpack_buf->size);
+
       }
    }
    MSGPACK_READER_SIMPLE_LOOP_END

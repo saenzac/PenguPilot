@@ -66,6 +66,7 @@ int mot_sm_init(void)
    etimer_init(&timer, 1.5);
    MSGPACK_PACKER_INIT();
    mot_state_socket = scl_get_socket("mot_state", "pub");
+   LOG(LL_DEBUG, "mot_sm_init done");
    THROW_IF(mot_state_socket == NULL, -EIO);
    THROW_END();
 }

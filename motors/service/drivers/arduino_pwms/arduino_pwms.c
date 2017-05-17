@@ -62,16 +62,20 @@ int arduino_pwms_init(void)
 }
 
 
-int arduino_pwms_write(float *setpoints)
+int arduino_pwms_write(float *setpoints, float *pwms)
 {
-   uint8_t values[PWM_COUNT_MAX];
-   uint8_t buffer[16];
+    
+   //uint8_t values[PWM_COUNT_MAX];
+   //uint8_t buffer[16];
 
    FOR_N(i, PWM_COUNT_MAX)
-      values[i] = (uint8_t)(setpoints[i] * 120.0f + 127.0f);
+      pwms[i] = (uint8_t)(setpoints[i] * 120.0f + 127.0f);
+      //johnny_mod: values[i] = (uint8_t)(setpoints[i] * 120.0f + 127.0f);
 
-   size_t len = pwm_build_frame(buffer, values, PWM_COUNT_MAX);
-   int ret = serial_write(&port, (const char *)buffer, len);	
-   return (ret < 0) ? -EAGAIN : 0;
+
+   //size_t len = pwm_build_frame(buffer, values, PWM_COUNT_MAX);
+   //int ret = serial_write(&port, (const char *)buffer, len);	
+   //return (ret < 0) ? -EAGAIN : 0; 
+   return 0;
 }
 
