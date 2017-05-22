@@ -31,7 +31,7 @@
 
 int arduino_pwms_init(void);
 
-int arduino_pwms_write(float *setpoints, float *pwms);
+int arduino_pwms_write(float *setpoints);
 
 
 #endif /* __ARDUINO_PWMS_H__ */

@@ -176,7 +176,7 @@ SERVICE_MAIN_BEGIN("motors", PP_PRIO_1)
    char *driver;
    opcd_param_get(buffer_path, &driver);
    LOG(LL_INFO, "driver: %s", driver);
-   int (*write_motors)(float *,float*);
+   int (*write_motors)(float *);
    if (strcmp(driver, "arduino") == 0)
    {
       //arduino_pwms_init(); //johnny mod
@@ -230,7 +230,7 @@ SERVICE_MAIN_BEGIN("motors", PP_PRIO_1)
                ctrls[order[i]] = 0.0f;
          }
          pthread_mutex_unlock(&mutex);
-          
+
          static int int_en_prev = 0;
          if (int_en_prev != int_en)
          {
@@ -240,13 +240,16 @@ SERVICE_MAIN_BEGIN("motors", PP_PRIO_1)
             scl_copy_send_dynamic(int_en_socket, msgpack_buf->data, msgpack_buf->size);
          }
 
-         float pwms[MAX_MOTORS];
-         write_motors(ctrls,pwms);
-         
+         //float pwms[MAX_MOTORS];
+         write_motors(ctrls);
+
          msgpack_sbuffer_clear(msgpack_buf);
          msgpack_pack_array(pk,4);
+         //FOR_N(i,4)
+         //  PACKF(pwms[i]);
+
          FOR_N(i,4)
-           PACKF(pwms[i]);
+             PACKF((uint8_t)(ctrls[i] * 120.0f + 127.0f));
 
          scl_copy_send_dynamic(pwms_socket, msgpack_buf->data, msgpack_buf->size);
 
