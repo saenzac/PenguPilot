@@ -1,17 +1,47 @@
-apt-get install swig (neccesary for compile display/...)
+In Debian:
+sudo apt-get install swig (neccesary for compile display/...)
 
 #neccesary if not comply with protoc-c not found:
-apt-get install protobuf-c-compiler
-apt-get install libprotobuf-c-dev
+sudo apt-get install protobuf-c-compiler
+sudo apt-get install libprotobuf-c-dev
 sudo pip install protobuf
 
 #geomath
 pip install geomath
 pip install pyproj
 
+
 msgpack-0.5.9   : newver versions doesnt work (pip install msgpack-python)
+
+
 libzmq: 4.05 (using debian patches, jessy repo)
 python-zmq : 14.6  (pip install pyzmq==14.6.0)
 
-protobuf: 2.6.1  (instead of apt-get install libprotobuf10)
-apt-get install protobuf-compiler
+#apt-get install protobuf-compiler (version 2.6.1 if possible)
+#protobuf: 2.6.1  (instead of apt-get install libprotobuf10)
+
+
+
+In ubuntu:
+
+sudo apt-get install swig (mandatory for compile display*)
+
+#protoc
+apt-get install libprotobuf10 #this is protobuf base library
+sudo apt-get install protobuf-c-compiler (bindings in c of protobuf, require to have libprotobuf install (see line above))
+sudo apt-get install libprotobuf-c-dev #(pengupilot codeilot use this for build its )
+apt-get install python-protobuf #(python bindings of protobuf)
+
+#geomath
+pip install geomath
+pip install pyproj
+
+#msgpack
+msgpack-0.5.9   : newver versions doesnt work (pip install msgpack-python)
+
+#zeromq
+apt-get install libzmq5
+apt-get install libzmq5-dev
+apt-get install python-zmq
+
+

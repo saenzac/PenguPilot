@@ -238,3 +238,5 @@ gps_logger:
   binary: 'logger/service/gps_logger.py'
   depends: [gpstime]
 
+simulation:
+  binary: 'simulation/service/simulation'

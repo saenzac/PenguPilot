@@ -36,6 +36,7 @@ def main(name):
    sched_set_prio(PP_PRIO_6)
    socket_in = scl_get_socket('log_data', 'pull')
    socket_out = scl_get_socket('log_data_pub', 'pub')
+   print "lol"
    while True:
       data = socket_in.zmq_socket.recv()
       socket_out.zmq_socket.send(data)

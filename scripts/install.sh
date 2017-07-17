@@ -24,7 +24,6 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-
 cd /usr/local/bin
 sudo ln -f -s $PENGUPILOT_PATH/opcd/tools/opcd_shell.sh pp_opcd_shell
 sudo ln -f -s $PENGUPILOT_PATH/ahrs/tools/print_ypr.py pp_print_ypr

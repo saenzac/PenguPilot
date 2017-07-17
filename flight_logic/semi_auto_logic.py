@@ -77,7 +77,8 @@ try:
          pr_sticks = [pitch_stick, roll_stick]
          
 	 #set the mode of flight to a desired one
-         mode = channel_to_mode(mode_switch)
+         #mode = channel_to_mode(mode_switch)
+         mode = 'gps' #jsa mod
          #if mode == 'gps' and fix(gps.data) < 2:
          #   mode = 'acc'
          if mode_prev != mode:

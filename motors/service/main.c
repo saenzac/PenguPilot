@@ -179,8 +179,8 @@ SERVICE_MAIN_BEGIN("motors", PP_PRIO_1)
    int (*write_motors)(float *);
    if (strcmp(driver, "arduino") == 0)
    {
-      //arduino_pwms_init(); //johnny mod
-      write_motors = arduino_pwms_write;   
+      //arduino_pwms_init(); //jsa: I dont want this for simulation
+      write_motors = arduino_pwms_write;   //I've commented the serial transfer part
    }
    THROW_ON_ERR(mot_sm_init());
    interval_t interval;
@@ -240,18 +240,14 @@ SERVICE_MAIN_BEGIN("motors", PP_PRIO_1)
             scl_copy_send_dynamic(int_en_socket, msgpack_buf->data, msgpack_buf->size);
          }
 
-         //float pwms[MAX_MOTORS];
-         write_motors(ctrls);
+         write_motors(ctrls); //jsa: This function (arduino_pwms_write()) is commented , because its hardware interface
 
-         msgpack_sbuffer_clear(msgpack_buf);
-         msgpack_pack_array(pk,4);
+         //jsa: send ctrls[i] that is pwm value to pwms_socket
+         //msgpack_sbuffer_clear(msgpack_buf);
+         //msgpack_pack_array(pk,4);
          //FOR_N(i,4)
-         //  PACKF(pwms[i]);
-
-         FOR_N(i,4)
-             PACKF((uint8_t)(ctrls[i] * 120.0f + 127.0f));
-
-         scl_copy_send_dynamic(pwms_socket, msgpack_buf->data, msgpack_buf->size);
+         //    PACKF((uint8_t)(ctrls[i] * 120.0f + 127.0f));
+         //scl_copy_send_dynamic(pwms_socket, msgpack_buf->data, msgpack_buf->size);
 
       }
    }

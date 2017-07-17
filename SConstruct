@@ -164,3 +164,4 @@ build_service('remote', [remote_lib])
 build_service('motors')
 build_service('mixer')
 
+build_service('simulation')
