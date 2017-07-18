@@ -59,7 +59,7 @@ ap_state = SCL_Reader('ap_status', 'sub')
 init(OPCD_Subscriber())
 sleep(1)
 api = CtrlAPI()
-api.set_thrust_max(100.0)
+api.set_thrust_max(35.0)
 try:
    killed = False
    mc = False
@@ -68,6 +68,7 @@ try:
    mode_prev = None
 
    while True:
+      api.on_simu()
       rc_data = rc_socket.recv()
       state = ap_state.data      
       if rc_data[0]:
@@ -101,7 +102,7 @@ try:
               
             vals = map(pitch_roll_angle_func, pr_sticks)
             api.set_rp([-vals[0], vals[1]])
-            print 'set simu called'
+            
             
             if killed == False:
                 #kill autopilot
