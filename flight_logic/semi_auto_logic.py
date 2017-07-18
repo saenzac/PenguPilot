@@ -79,8 +79,9 @@ try:
 	 #set the mode of flight to a desired one
          #mode = channel_to_mode(mode_switch)
          mode = 'gps' #jsa mod
+         print 'gps mode selected'
          #if mode == 'gps' and fix(gps.data) < 2:
-         #   mode = 'acc'
+         #   mode = 'acc'ff
          if mode_prev != mode:
             print 'new mode:', mode
             once = 1
@@ -100,6 +101,7 @@ try:
               
             vals = map(pitch_roll_angle_func, pr_sticks)
             api.set_rp([-vals[0], vals[1]])
+            print 'set simu called'
             
             if killed == False:
                 #kill autopilot

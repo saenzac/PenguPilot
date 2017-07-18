@@ -165,3 +165,4 @@ build_service('motors')
 build_service('mixer')
 
 build_service('simulation')
+build_service('plantsimpl')

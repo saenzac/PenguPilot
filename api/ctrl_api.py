@@ -99,6 +99,9 @@ class CtrlAPI:
       # motor enable:
       self._mot_en = scl_get_socket('mot_en', 'push')
 
+      self._simu_oe_ = scl_get_socket('simu_oe', 'push')
+      self._simu_oe = _OutputEnable([self._simu_oe_])
+
 
    def mot_en(self, val):
       """enables (True) or disables (False) the motors"""
@@ -190,3 +193,8 @@ class CtrlAPI:
       self._hp_sp_n.send(float(vec[0]))
       self._hp_sp_e.send(float(vec[1]))
 
+   def on_simu(self):
+      self._simu_oe.set(1)
+
+   def off_simu(self):
+      self._simu_oe.set(0)

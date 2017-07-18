@@ -139,9 +139,17 @@ SERVICE_MAIN_BEGIN("rs_ctrl", PP_PRIO_1)
       {
          /* read synchronous gyro data: */
          float gyro[3];
-         gyro[GYRO_X_AXIS] = root.via.array.ptr[GYRO_X_DIR].via.dec;
-         gyro[GYRO_Y_AXIS] = root.via.array.ptr[GYRO_Y_DIR].via.dec;
-         gyro[GYRO_Z_AXIS] = root.via.array.ptr[GYRO_Z_DIR].via.dec;
+         gyro[GYRO_X_AXIS] = root.via.array.ptr[GYRO_X_DIR].via.dec; //droll
+         gyro[GYRO_Y_AXIS] = root.via.array.ptr[GYRO_Y_DIR].via.dec; //dpitch
+         gyro[GYRO_Z_AXIS] = root.via.array.ptr[GYRO_Z_DIR].via.dec; //dyaw
+
+         //#define GYRO_X_DIR 0
+         //#define GYRO_Y_DIR 1
+         //#define GYRO_Z_DIR 2
+
+         //#define GYRO_X_AXIS 1
+         //#define GYRO_Y_AXIS 0
+         //#define GYRO_Z_AXIS 2
 
          /* retrieve asynchronous setpoints: */
          float rates[3] = {tsfloat_get(&rs_ctrl_sp_p),

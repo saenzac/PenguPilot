@@ -13,7 +13,6 @@
 #include "inv_coupling.h"
 #include "coupling_matrix_parser.h"
 
-
 /* thread that reads the thrust: */
 tsfloat_t thrust;
 MSGPACK_READER_BEGIN(thrust_reader)
@@ -29,8 +28,6 @@ MSGPACK_READER_BEGIN(thrust_max_reader)
       tsfloat_set(&thrust_max, root.via.dec);
    MSGPACK_READER_LOOP_END
 MSGPACK_READER_END
-
-
 
 SERVICE_MAIN_BEGIN("mixer", PP_PRIO_1)
 {

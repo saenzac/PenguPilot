@@ -45,7 +45,9 @@ def main(name):
    opcd = OPCD_Subscriber()
 
    # state input sockets/readers:
-   orientation_socket = scl_get_socket('orientation', 'sub')
+
+   #orientation_socket = scl_get_socket('orientation', 'sub')
+   orientation = SCL_Reader('orientation', 'sub', [0.0, 0.0, 0.0])
    gyro = SCL_Reader('gyro', 'sub', [0.0, 0.0, 0.0])
 
    # setpoint readers:
@@ -73,7 +75,11 @@ def main(name):
    pid_y = PID_Ctrl(circle_err) # special error computation function
 
    while True:
-      yaw, pitch, roll = orientation_socket.recv()
+      #yaw, pitch, roll = orientation_socket.recv()
+      yaw=orientation.data[2]
+      pitch=orientation.data[0]
+      roll=orientation.data[1]
+
       pid_p.p = pid_r.p = opcd[name + '.pr_p']
       pid_p.d = pid_r.d = opcd[name + '.pr_d']
       pid_y.p = opcd[name + '.yaw_p']
@@ -83,8 +89,8 @@ def main(name):
 
       # pitch position control:
       ctrl_p = pid_p.control(pitch, sym_limit(sp_p.data, angles_max) + pitch_bias, gyro.data[1])
-      if p_oe.data:
-         spp_p_socket.send(ctrl_p)
+      #if p_oe.data:
+      spp_p_socket.send(ctrl_p)
       
       # roll position control:
       ctrl_r = pid_r.control(roll, sym_limit(sp_r.data, angles_max) + roll_bias, gyro.data[0])
