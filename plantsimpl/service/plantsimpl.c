@@ -82,7 +82,7 @@ SERVICE_MAIN_BEGIN("plantsimpl", PP_PRIO_1)
   MSGPACK_READER_START(thrust_max_reader, "thrust_max", PP_PRIO_1, "sub");
   MSGPACK_READER_START(mot_state_reader, "mot_state", PP_PRIO_1, "sub");
 
-  const float T=0.0005;
+  const float T=0.0001;
 
   //float u1;
   float u2;
@@ -98,8 +98,8 @@ SERVICE_MAIN_BEGIN("plantsimpl", PP_PRIO_1)
 
   float x1ant,x2ant,x3ant,x4ant,x5ant,x6ant,x7ant,x8ant,x9ant,x10ant,x11ant,x12ant;
   //float u1ant,u2ant,u3ant,u4ant;
-  float x1ant2, x3ant2,x5ant2;
-  x1ant2=x3ant2=x5ant2=0;
+  //float x1ant2, x3ant2,x5ant2;
+  //x1ant2=x3ant2=x5ant2=0;
   //u1ant=u2ant=u3ant=u4ant=0;
   x1ant=x2ant=x3ant=x4ant=x5ant=x6ant=x7ant=x8ant=x9ant=x10ant=x11ant=x12ant=0;
   float x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12;
@@ -132,10 +132,6 @@ SERVICE_MAIN_BEGIN("plantsimpl", PP_PRIO_1)
       FOR_N(i, 3)
         _thrust_torques[i+1] = tsfloat_get(&torques[i]);
 
-
-      
-        
-      
       pthread_mutex_lock(&mutex);
       //u1=_thrust_torques[0];
       u2=_thrust_torques[1]/L;
@@ -148,16 +144,20 @@ SERVICE_MAIN_BEGIN("plantsimpl", PP_PRIO_1)
       //u3ant=u3;
       //u4ant=u4;
 
+      /*
       // Este tambien funciona , requiere anteriores de anteriores: k-2
+      x2= (x1ant - x1ant2)/T;
+      x4= (x3ant - x3ant2)/T;
+      x6= (x5ant - x5ant2)/T;  
+
+
       x1 = (T*T) * ( ((x3ant-x3ant2)/T)*((x5ant-x5ant2)/T)*a1 + a2*u2 ) + 2*x1ant - x1ant2;
       x3 = (T*T) * ( ((x1ant-x1ant2)/T)*((x5ant-x5ant2)/T)*a3 + a4*u3 ) + 2*x3ant - x3ant2;
       x5 = (T*T) * ( ((x1ant-x1ant2)/T)*((x3ant-x3ant2)/T)*a5 + a6*u4 ) + 2*x5ant - x5ant2;
+      */
   
-      x2= (x1 - x1ant)/T;
-      x4= (x3 - x3ant)/T;
-      x6= (x5 - x5ant)/T;    
       // fin ,
-/*
+
       // --- este es el mejor funciona en velocidad si se parece con T entre mseg ( 0.3 y 0.5)
       x1 = x2ant*T + x1ant;
       x3 = x4ant*T + x3ant;
@@ -166,13 +166,11 @@ SERVICE_MAIN_BEGIN("plantsimpl", PP_PRIO_1)
       x2 = T*( x4ant*x6ant*a1 + a2*u2 ) + x2ant;
       x4 = T*( x2ant*x6ant*a3 + a4*u3 ) + x4ant;
       x6 = T*( x2ant*x4ant*a5 + a6*u4 ) + x6ant;
-*/
-
       // --fin
       
-      x1ant2 = x1ant;
-      x3ant2 = x3ant;
-      x5ant2 = x5ant;
+      //x1ant2 = x1ant;
+      //x3ant2 = x3ant;
+      //x5ant2 = x5ant;
 
       x1ant = x1;
       x2ant = x2;
@@ -198,7 +196,7 @@ SERVICE_MAIN_BEGIN("plantsimpl", PP_PRIO_1)
       scl_copy_send_dynamic(orientation_socket, msgpack_buf->data, msgpack_buf->size);
 
 
-      msleep(0.5);
+      msleep(0.1);
       pthread_mutex_unlock(&mutex);
 
     }
