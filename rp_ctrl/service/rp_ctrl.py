@@ -76,9 +76,9 @@ def main(name):
 
    while True:
       #yaw, pitch, roll = orientation_socket.recv()
-      yaw=orientation.data[2]
-      pitch=orientation.data[0]
-      roll=orientation.data[1]
+      yaw=orientation.data[0]
+      pitch=orientation.data[1]
+      roll=orientation.data[2]
 
       pid_p.p = pid_r.p = opcd[name + '.pr_p']
       pid_p.d = pid_r.d = opcd[name + '.pr_d']

@@ -31,7 +31,7 @@ SERVICE_MAIN_BEGIN("simulation", PP_PRIO_1)
  
   MSGPACK_READER_START(simu_oe_reader, "simu_oe", PP_PRIO_1, "pull");
 
-  FILE* fp = fopen("/home/johnnysaenz/workspace/PenguPilot/test.txt", "r");
+  FILE* fp = fopen("/Volumes/data/GoogleDrive/Data/Maestria/Investigation/tesis/PenguPilot/test.txt", "r");
   if (fp == NULL)
     exit(EXIT_FAILURE);
 
