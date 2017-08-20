@@ -166,3 +166,5 @@ build_service('mixer')
 
 build_service('simulation')
 build_service('plantsimpl')
+build_service('bcks_ctrl')
+

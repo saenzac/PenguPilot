@@ -1,15 +1,17 @@
 #include <math.h>
-
 #include <simple_thread.h>
 #include <service.h>
+#include <scl.h>
 #include <threadsafe_types.h>
 #include <msgpack_reader.h>
 #include <gyro.h>
 #include <pp_prio.h>
-#include <pid.h>
-#include <mot_state.h>
+#include <float.h>
+#include <time.h>
+//#include <pid.h>
+//#include <mot_state.h>
 
-#include "piid.h"
+//#include "piid.h"
 
 #define RATE_CTRL_PITCH 0
 #define RATE_CTRL_ROLL  1
@@ -20,6 +22,13 @@ static tsfloat_t rs_ctrl_sp_p;
 static tsfloat_t rs_ctrl_sp_r;
 static tsfloat_t rs_ctrl_sp_y;
 static int oe = 1; //by default is enable, the only way to disable is call the corresponding function in flight_logic -> ctrl_api
+
+static float L=0.2025;
+static float g=9.81;
+static float m=1.26;
+static float Ix= 0.0098; 
+static float Iy= 0.0142; 
+static float Iz= 0.0082;
 
 /* reads output enable: */
 MSGPACK_READER_BEGIN(rs_ctrl_oe_reader)
@@ -90,16 +99,15 @@ SERVICE_MAIN_BEGIN("bcks_ctrl", PP_PRIO_1)
      tsfloat_init(&torques[i]);
 
    /* initialize msgpack: */
-   msgpack_sbuffer *msgpack_buf = msgpack_sbuffer_new();
-   THROW_IF(msgpack_buf == NULL, -ENOMEM);
-   msgpack_packer *pk = msgpack_packer_new(msgpack_buf, msgpack_sbuffer_write);
-   THROW_IF(pk == NULL, -ENOMEM);
+   //msgpack_sbuffer *msgpack_buf = msgpack_sbuffer_new();
+   //THROW_IF(msgpack_buf == NULL, -ENOMEM);
+   //msgpack_packer *pk = msgpack_packer_new(msgpack_buf, msgpack_sbuffer_write);
+   //THROW_IF(pk == NULL, -ENOMEM);
+   MSGPACK_PACKER_DECL_INFUNC();
   
    /* initialize SCL: */
    void *gyro_socket = scl_get_socket("gyro", "sub");
    THROW_IF(gyro_socket == NULL, -EIO);
-   void *orientation_socket = scl_get_socket("orientation", "sub");
-   THROW_IF(orientation_socket == NULL, -EIO);
    void *torques_socket = scl_get_socket("torques_p", "push");
    THROW_IF(torques_socket == NULL, -EIO);
 
@@ -114,7 +122,21 @@ SERVICE_MAIN_BEGIN("bcks_ctrl", PP_PRIO_1)
    //const float sample_dt = 0.005;
    //piid_init(sample_dt);
    //LOG(LL_INFO, "entering main loop");
-   float _thrust_torques[4]={0.0, 0.0, 0.0, 0.0};
+   const float Tms = 5; //T in ms
+   const float T = Tms / 1000.0; //T in seconds
+
+   float x5d = 0;
+   float u2;
+   float u3;
+   float u4;
+
+   float a1=(Iy-Iz)/Ix;
+   float a2=(L/Ix);
+   float a3=(Iz-Ix)/Iy;
+   float a4=(L/Iy);
+   float a5=(Ix-Iy)/Iz;
+   float a6=(1/Iz);
+
    MSGPACK_READER_SIMPLE_LOOP_BEGIN(gyro)
    {
       if (root.type == MSGPACK_OBJECT_ARRAY)
@@ -138,18 +160,33 @@ SERVICE_MAIN_BEGIN("bcks_ctrl", PP_PRIO_1)
                                tsfloat_get(&rs_ctrl_sp_y)};
          
          /* run rate controller: */
+
          float torques[3];
-         /* run backstepping controller: */
+         /** run backstepping controller: **/
          pthread_mutex_lock(&mutex);
          //piid_run(torques, gyro, rates, sample_dt);
-         
 
+         z1 = setpoints[0] - angles[0];
+         dx1d = (setpoints[0] - x1d_ant)/dt;
+         z2 = dx1d + k1*z1 - gyro[0];
+         u2 = (1/a2)*(k1*(z2-k1*z1)-x4*x6*a1+z1+k2*z2);
 
+         z3 = setpoints[1] - angles[1];
+         dx3d = (setpoints[1] - x3d_ant)/dt;
+         z4 = dx3d + k3*z3 - gyro[1];
+         u3 = (1/a4)*(k3*(z4-k3*z3)-x2*x6*a3+z3+k4*z4);
+
+         x5d = setpoints[2]*dt + x5d;
+         z5 = x5d - angles[2];
+         z6 = setpoints[2] + k5*z5 - gyro[2];
+         u4 = (1/a6)*(k5*(z6-k5*z5)-x2*x4*a5+z5+k6*z6);
 
          torques[0]=u2*L;
          torques[1]=u3*L;
          torques[2]=u4;
-         pthread_mutex_unlock(&mutex);
+
+         /** end backstepping controller: **/
+         
 
          /* send synchronous torques: */
          if (oe)
@@ -166,6 +203,9 @@ SERVICE_MAIN_BEGIN("bcks_ctrl", PP_PRIO_1)
             scl_copy_send_dynamic(err_socket, msgpack_buf->data, msgpack_buf->size);
  
          }
+
+         msleep(Tms);
+         pthread_mutex_unlock(&mutex);
       }
    }
    MSGPACK_READER_SIMPLE_LOOP_END

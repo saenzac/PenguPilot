@@ -66,7 +66,7 @@ MSGPACK_READER_END
 
 SERVICE_MAIN_BEGIN("plantsimpl", PP_PRIO_1)
 {
-  tsfloat_init(&thrust, 0.0f); // 0N force; safe to start with
+   tsfloat_init(&thrust, 0.0f); // 0N force; safe to start with
   tsfloat_init(&thrust_max, 12); // allow maximum thrust, can be limited later on
 
   /* initialize SCL: */
@@ -84,7 +84,7 @@ SERVICE_MAIN_BEGIN("plantsimpl", PP_PRIO_1)
 
   const float Tms = 10; //T in ms
   const float T = Tms / 1000.0; //T in seconds
-  srand(time(NULL));  
+  //srand(time(NULL));  //for generate random numer, for noise simulation
 
   //float u1;
   float u2;

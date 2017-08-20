@@ -249,3 +249,7 @@ simulation:
 
 plantsimpl:
   binary: 'plantsimpl/service/plantsimpl'
+
+bcks_ctrl:
+  binary: 'bcks_ctrl/service/bcks_ctrl'
+
