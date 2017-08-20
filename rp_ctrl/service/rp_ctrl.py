@@ -75,10 +75,10 @@ def main(name):
    pid_y = PID_Ctrl(circle_err) # special error computation function
 
    while True:
-      #yaw, pitch, roll = orientation_socket.recv()
-      yaw=orientation.data[0]
-      pitch=orientation.data[1]
-      roll=orientation.data[2]
+      yaw, pitch, roll = orientation_socket.recv()
+      #yaw=orientation.data[0]
+      #pitch=orientation.data[1]
+      #roll=orientation.data[2]
 
       pid_p.p = pid_r.p = opcd[name + '.pr_p']
       pid_p.d = pid_r.d = opcd[name + '.pr_d']
@@ -89,8 +89,8 @@ def main(name):
 
       # pitch position control:
       ctrl_p = pid_p.control(pitch, sym_limit(sp_p.data, angles_max) + pitch_bias, gyro.data[1])
-      #if p_oe.data:
-      spp_p_socket.send(ctrl_p)
+      if p_oe.data:
+         spp_p_socket.send(ctrl_p)
       
       # roll position control:
       ctrl_r = pid_r.control(roll, sym_limit(sp_r.data, angles_max) + roll_bias, gyro.data[0])

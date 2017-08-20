@@ -7,5 +7,6 @@ pp_svctrl --start rs_ctrl
 pp_svctrl --start mixer_prx
 pp_svctrl --start mixer
 pp_svctrl --start motors
+echo 'calling semi_auto_logic.py'
 python flight_logic/semi_auto_logic.py
-
+./stopservices.sh

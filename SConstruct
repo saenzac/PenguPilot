@@ -33,7 +33,7 @@ re_cc = re.compile('.*\.(c|cpp)$')
 re_pb = re.compile('.*\.proto$')
 
 def set_compiler_dependent_cflags():
-   cflags = '-O3 -DMSGPACK_USE_LEGACY_NAME_AS_FLOAT -D_GNU_SOURCE -std=c99 -Wall -Wextra -Werror -Wno-strict-aliasing -Wno-unused-variable -Wno-unused-parameter -Wno-unused-function -Wno-error=unused-result'
+   cflags = '-O3 -DMSGPACK_USE_LEGACY_NAME_AS_FLOAT -D_GNU_SOURCE -std=c99 -Wall -Wextra -Wno-strict-aliasing -Wno-unused-variable -Wno-unused-parameter -Wno-unused-function -Wno-error=unused-result'
    all_info = file('/proc/cpuinfo').read()
    board = 'None'
    for line in all_info.split('\n'):

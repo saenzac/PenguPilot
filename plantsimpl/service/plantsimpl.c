@@ -23,16 +23,16 @@ static float Ix= 0.0098;
 static float Iy= 0.0142; 
 static float Iz= 0.0082;
 
-static tsint_t motstate;
+/*static tsint_t motstate;
 
 MSGPACK_READER_BEGIN(mot_state_reader)
    MSGPACK_READER_LOOP_BEGIN(mot_state_reader)
    tsint_set(&motstate, root.via.i64); //!= MOTORS_RUNNING)
    MSGPACK_READER_LOOP_END
-MSGPACK_READER_END
+MSGPACK_READER_END*/
 
 
-/* thread that reads the thrust: */
+/* thread that reads the torques: */
 tsfloat_t torques[3];
 MSGPACK_READER_BEGIN(torques_reader)
    MSGPACK_READER_LOOP_BEGIN(torques_reader)
@@ -80,10 +80,10 @@ SERVICE_MAIN_BEGIN("plantsimpl", PP_PRIO_1)
   MSGPACK_READER_START(torques_reader, "torques", PP_PRIO_1, "sub");
   MSGPACK_READER_START(thrust_reader, "thrust", PP_PRIO_1, "sub");
   MSGPACK_READER_START(thrust_max_reader, "thrust_max", PP_PRIO_1, "sub");
-  MSGPACK_READER_START(mot_state_reader, "mot_state", PP_PRIO_1, "sub");
+  //MSGPACK_READER_START(mot_state_reader, "mot_state", PP_PRIO_1, "sub");
 
-  const float Tms = 10;
-  const float T = Tms / 1000.0;
+  const float Tms = 10; //T in ms
+  const float T = Tms / 1000.0; //T in seconds
   srand(time(NULL));  
 
   //float u1;
@@ -102,8 +102,10 @@ SERVICE_MAIN_BEGIN("plantsimpl", PP_PRIO_1)
   //float u1ant,u2ant,u3ant,u4ant;
   //float x1ant2, x3ant2,x5ant2; x1ant2=x3ant2=x5ant2=0;
   //u1ant=u2ant=u3ant=u4ant=0;
-  x1ant=x2ant=x3ant=x4ant=x5ant=x6ant=x7ant=x8ant=x9ant=x10ant=x11ant=x12ant=0;
   float x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12;
+  
+  //initial values
+  x1ant=x2ant=x3ant=x4ant=x5ant=x6ant=x7ant=x8ant=x9ant=x10ant=x11ant=x12ant=0; 
   x1=x2=x3=x4=x5=x6=x7=x8=x9=x10=x11=x12=0;
 
   //set-up msgpack packer: 
@@ -126,7 +128,6 @@ SERVICE_MAIN_BEGIN("plantsimpl", PP_PRIO_1)
       x12ant=0;
     }*/
 
-
     float _thrust_torques[4]={0.0, 0.0, 0.0, 0.0};
     if (root.type == MSGPACK_OBJECT_ARRAY)
     {
@@ -136,9 +137,9 @@ SERVICE_MAIN_BEGIN("plantsimpl", PP_PRIO_1)
 
       pthread_mutex_lock(&mutex);
       //u1=_thrust_torques[0];
-      u2=_thrust_torques[1]/L;
-      u3=_thrust_torques[2]/L;
-      u4=_thrust_torques[3];
+      u2=_thrust_torques[1]/L; //with original controller we must divide by L
+      u3=_thrust_torques[2]/L; // "            "             "             "
+      u4=_thrust_torques[3]; 
       //LOG(LL_INFO, "u1: %f, u2: %f, u3: %f, u4: %f", u1,u2,u3,u4);
 
       //u1ant=u1;
@@ -169,7 +170,7 @@ SERVICE_MAIN_BEGIN("plantsimpl", PP_PRIO_1)
       x2 = T*( x4ant*x6ant*a1 + a2*u2 ) + x2ant; // dphi
       x4 = T*( x2ant*x6ant*a3 + a4*u3 ) + x4ant; // dtheta
       x6 = T*( x2ant*x4ant*a5 + a6*u4 ) + x6ant; // dpsi
-      // --fin
+      // -- end
 
       x1ant = x1;
       x2ant = x2;
@@ -180,19 +181,19 @@ SERVICE_MAIN_BEGIN("plantsimpl", PP_PRIO_1)
       x5ant = x5;
       x6ant = x6;
 
-
       msgpack_sbuffer_clear(msgpack_buf);
       msgpack_pack_array(pk, 3);
-      PACKF(x4 + ((rand() % 100)/1000.0)); // dtheta
-      PACKF(x2 + ((rand() % 100)/1000.0)); // dphi
-      PACKF(x6 + ((rand() % 100)/1000.0)); // dpsi
+      PACKF(x4); // dtheta
+      //PACKF(x4 + ((rand() % 100)/1000.0)); // dtheta
+      PACKF(x2); // dphi
+      PACKF(x6); // dpsi
       scl_copy_send_dynamic(gyro_socket, msgpack_buf->data, msgpack_buf->size);
 
       msgpack_sbuffer_clear(msgpack_buf);
       msgpack_pack_array(pk, 3);
-      PACKF(x5 + ((rand() % 100)/1000.0)); // psi
-      PACKF(x1 + ((rand() % 100)/1000.0)); // phi
-      PACKF(x3 + ((rand() % 100)/1000.0)); // theta
+      PACKF(x5); // psi
+      PACKF(x1); // phi
+      PACKF(x3); // theta
       scl_copy_send_dynamic(orientation_socket, msgpack_buf->data, msgpack_buf->size);
 
       msleep(Tms);
