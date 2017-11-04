@@ -1,4 +1,5 @@
 
+
 #include <stdio.h>
 #include <opcd_interface.h>
 #include <service.h>
@@ -19,9 +20,19 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 static float L=0.2025;
 static float g=9.81;
 static float m=1.26;
-static float Ix= 0.0098; 
-static float Iy= 0.0142; 
-static float Iz= 0.0082;
+
+
+static float Ix= 0.017;//0.0223; 
+static float Iy= 0.01279;//0.0222; 
+static float Iz= 0.035;
+
+
+/*
+static float Ix=0.0098; 
+static float Iy=0.0142; 
+static float Iz=0.0082;
+*/
+
 
 /*static tsint_t motstate;
 
@@ -42,7 +53,7 @@ MSGPACK_READER_BEGIN(torques_reader)
    FOR_N(i, 3)
       tsfloat_set(&torques[i], root.via.array.ptr[i].via.dec);
 
-   LOG(LL_INFO, "torques[0]: %f, [1]: %f, [2]: %f",  tsfloat_get(&torques[0]),tsfloat_get(&torques[1]),tsfloat_get(&torques[2])); 
+   //LOG(LL_INFO, "torques[0]: %f, [1]: %f, [2]: %f",  tsfloat_get(&torques[0]),tsfloat_get(&torques[1]),tsfloat_get(&torques[2])); 
    }
    MSGPACK_READER_LOOP_END
 MSGPACK_READER_END
@@ -105,8 +116,9 @@ SERVICE_MAIN_BEGIN("plantsimpl", PP_PRIO_1)
   float x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12;
   
   //initial values
-  x1ant=x2ant=x3ant=x4ant=x5ant=x6ant=x7ant=x8ant=x9ant=x10ant=x11ant=x12ant=0; 
+  x1ant=x2ant=x3ant=x4ant=x6ant=x7ant=x8ant=x9ant=x10ant=x11ant=x12ant=0; 
   x1=x2=x3=x4=x5=x6=x7=x8=x9=x10=x11=x12=0;
+  x5ant=0;
 
   //set-up msgpack packer: 
   MSGPACK_PACKER_DECL_INFUNC();
@@ -181,6 +193,8 @@ SERVICE_MAIN_BEGIN("plantsimpl", PP_PRIO_1)
       x5ant = x5;
       x6ant = x6;
 
+      pthread_mutex_unlock(&mutex);
+
       msgpack_sbuffer_clear(msgpack_buf);
       msgpack_pack_array(pk, 3);
       PACKF(x4); // dtheta
@@ -196,8 +210,8 @@ SERVICE_MAIN_BEGIN("plantsimpl", PP_PRIO_1)
       PACKF(x3); // theta
       scl_copy_send_dynamic(orientation_socket, msgpack_buf->data, msgpack_buf->size);
 
-      msleep(Tms);
-      pthread_mutex_unlock(&mutex);
+      //msleep(Tms);
+      //pthread_mutex_unlock(&mutex);
 
     }
   }

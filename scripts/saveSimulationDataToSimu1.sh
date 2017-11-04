@@ -1,5 +1,5 @@
-python /Volumes/Data/GoogleDrive/Data/Maestria/Investigation/tesis/PenguPilot/scripts/saveSimulationDataTo.py > simu2.log
-cp simu2.log /Volumes/Data/GoogleDrive/Data/Maestria/Investigation/tesis/projekt_Qcopter/documentation/control/data_measurements/simu/
-cd /Volumes/Data/GoogleDrive/Data/Maestria/Investigation/tesis/projekt_Qcopter/documentation/control/data_measurements/simu
-../py_parser/parse_fix.sh simu2.log
+python /Volumes/Data/GoogleDrive/Data/Maestria/Investigation/tesis/PenguPilot/scripts/saveSimulationDataTo.py > simu1.log
+cp simu1.log /Volumes/Data/GoogleDrive/Data/Maestria/Investigation/tesis/projekt_Qcopter/documentation/control/data_measurements/implementation/
+cd /Volumes/Data/GoogleDrive/Data/Maestria/Investigation/tesis/projekt_Qcopter/documentation/control/data_measurements/implementation/
+../py_parser/parse_fix.sh simu1.log
 

@@ -129,7 +129,7 @@ SERVICE_MAIN_BEGIN("rs_ctrl", PP_PRIO_1)
    MSGPACK_READER_START(int_en_reader, "int_en", PP_PRIO_1, "sub");
    MSGPACK_READER_START(mot_state_reader, "mot_state", PP_PRIO_1, "sub");
  
-   const float sample_dt = 0.005;
+   const float sample_dt = 0.010;
    piid_init(sample_dt);
    LOG(LL_INFO, "entering main loop");
 

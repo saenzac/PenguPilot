@@ -88,11 +88,11 @@ rs_ctrl_prx:
 
 rp_ctrl:
    binary: 'rp_ctrl/service/rp_ctrl.py'
-   depends: [ahrs, rs_ctrl_prx]
+   depends: [rs_ctrl_prx]
 
 rp_ctrl_prx:
    binary: 'rp_ctrl_prx/service/rp_ctrl_prx'
-   depends: []
+   depends: [rp_ctrl]
 #   depends: [rp_ctrl]
 
 hs_ctrl:
