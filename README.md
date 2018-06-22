@@ -1,6 +1,7 @@
 This a forked project that I used in my master thesis.
 The rotation controller was implemented using a backstepping based controller.
-
+Only the rotation controller is active, the other controllers services were disabled.
+A simulation service was added for software-in-the-loop simulations.
 
 NOTE: This the Next-Generation Work-In-Progress Branch of PenguPilot. For a stable release, check the master branch!
 
