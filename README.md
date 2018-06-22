@@ -1,4 +1,9 @@
+This a forked project that I used in my master thesis.
+The rotation controller was implemented using a backstepping based controller.
+
+
 NOTE: This the Next-Generation Work-In-Progress Branch of PenguPilot. For a stable release, check the master branch!
+
 
 ![PenguPilot](https://raw.github.com/PenguPilot/PenguPilot/master/doc/PenguPilot.png)
 
